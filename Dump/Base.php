@@ -180,7 +180,7 @@ abstract class Base extends Part
 			// Fetch the installer settings
 			$this->installerSettings = (object) [
 				'installerroot' => 'installation',
-				'sqlroot'       => 'installation/sql',
+				'sqlroot'       => storage_path('restore'),
 				'databasesini'  => 1,
 				'readme'        => 1,
 				'extrainfo'     => 1,

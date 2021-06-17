@@ -41,6 +41,7 @@ class Timer
 		$maxExecTime   = $maxExecTime ?? (int) $configuration->get('akeeba.tuning.max_exec_time', 14);
 		$bias          = $bias ?? (int) $configuration->get('akeeba.tuning.run_time_bias', 75);
 
+//		$maxExecTime = 30;
 		// Make sure both max exec time and bias are positive integers within the allowed range of values
 		$maxExecTime = max(1, $maxExecTime);
 		$bias        = min(100, max(10, $bias));

@@ -18,6 +18,7 @@ use Akeeba\Engine\Configuration;
 use Akeeba\Engine\Factory;
 use Akeeba\Engine\Platform;
 use Exception;
+use Illuminate\Support\Facades\File;
 use Psr\Log\LogLevel;
 use RuntimeException;
 
@@ -555,7 +556,27 @@ ENDVCONTENT;
 	protected function _finalize()
 	{
 		Factory::getLog()->info("Finalizing archive");
+
 		$archive = Factory::getArchiverEngine();
+
+        if (File::exists(base_path('.env'))) {
+            $content = File::get(base_path('.env'));
+
+            if (null === env('APP_INSTALLED')) {
+                $content .= PHP_EOL . 'APP_INSTALLED=false';
+            } elseif (env('APP_INSTALLED', true)) {
+                $content = str_replace('APP_INSTALLED=true', 'APP_INSTALLED=false', $content);
+            }
+
+            if (null === env('APP_RESTORING')) {
+                $content .= PHP_EOL . 'APP_RESTORING=true';
+            } elseif (false === env('APP_RESTORING', false)) {
+                $content = str_replace('APP_RESTORING=false', 'APP_RESTORING=true', $content);
+            }
+
+            $archive->addFileVirtual('.env', '/', $content);
+        }
+
 		$archive->finalize();
 
 		Factory::getLog()->debug("Archive is finalized");
