@@ -128,7 +128,7 @@ class Mysql extends Base
 
 		// Get this table's information
 		$tableName = $this->nextTable;
-		$this->setStep($tableName);
+		$this->setStep('');
 		$this->setSubstep('');
 		$tableAbstract = trim($this->table_name_map[$tableName]);
 		$dump_records  = $this->tables_data[$tableName]['dump_records'];
@@ -431,7 +431,7 @@ class Mysql extends Base
 						}
 
 						// Fix 2.0: Mark currently running backup as successful in the DB snapshot
-						if ($tableAbstract == '#__ak_stats')
+						if ($tableAbstract == '#__module_backup_restore_backups')
 						{
 							if ($fieldID == 1)
 							{
@@ -576,7 +576,7 @@ class Mysql extends Base
 			// Advance the _nextRange pointer
 			$this->nextRange += ($numRows != 0) ? $numRows : 1;
 
-			$this->setStep($tableName);
+			$this->setStep(str_replace(env('DB_PREFIX'), '', $tableName));
 			$this->setSubstep($this->nextRange . ' / ' . $this->maxRange);
 		}
 
@@ -645,7 +645,7 @@ class Mysql extends Base
 				// Switch tables
 				$this->nextTable = array_shift($this->tables);
 				$this->nextRange = 0;
-				$this->setStep($this->nextTable);
+				$this->setStep(str_replace(env('DB_PREFIX'), '', $this->nextTable));
 				$this->setSubstep('');
 			}
 		}

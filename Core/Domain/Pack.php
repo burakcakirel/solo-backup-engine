@@ -613,7 +613,6 @@ ENDVCONTENT;
 		{
 			// Get and remove the last entry from the $directory_list array
 			$this->current_directory = array_pop($this->directory_list);
-			$this->setStep($this->current_directory);
 			$this->processed_files_counter = 0;
 		}
 
@@ -683,7 +682,9 @@ ENDVCONTENT;
 			}
 		}
 
-		return true;
+        $this->setStep(str_replace(base_path(), '', $this->current_directory));
+
+        return true;
 	}
 
 	/**

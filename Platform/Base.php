@@ -36,10 +36,10 @@ abstract class Base implements PlatformInterface
 	public $decryptionException = false;
 
 	/** @var string The name of the table where backup profiles are stored */
-	public $tableNameProfiles = '#__ak_profiles';
+	public $tableNameProfiles = '#__module_backup_restore_profiles';
 
 	/** @var string The name of the table where backup records are stored */
-	public $tableNameStats = '#__ak_stats';
+	public $tableNameStats = '#__module_backup_restore_backups';
 
 	public function getPlatformDirectories()
 	{

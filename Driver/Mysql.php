@@ -312,7 +312,7 @@ class Mysql extends Base
 	 */
 	public function getCollation()
 	{
-		$this->setQuery('SHOW FULL COLUMNS FROM #__ak_stats');
+		$this->setQuery('SHOW FULL COLUMNS FROM #__module_backup_restore_backups');
 		$array = $this->loadAssocList();
 
 		return $array['2']['Collation'];
