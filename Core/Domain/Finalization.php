@@ -790,8 +790,8 @@ class Finalization extends Part
 		 */
 		$statistics->updateInStep(false);
 
-		$stat = (object) $statistics->getRecord();
-		Platform::getInstance()->remove_duplicate_backup_records($stat->archivename);
+//		$stat = (object) $statistics->getRecord();
+//		Platform::getInstance()->remove_duplicate_backup_records($stat->archivename);
 
 		return true;
 	}

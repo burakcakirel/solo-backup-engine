@@ -294,7 +294,7 @@ class Mysql extends Base
 			else
 			{
 				// Subsequent runs, get a cursor to the rest of the records
-				$this->setSubstep($this->nextRange . ' / ' . $this->maxRange);
+				$this->setSubstep('');
 
 				// If we have an auto_increment value and the table has over $batchsize records use the indexed select instead of a plain limit
 				if (!is_null($this->table_autoincrement['field']) && !is_null($this->table_autoincrement['value']))
@@ -577,7 +577,7 @@ class Mysql extends Base
 			$this->nextRange += ($numRows != 0) ? $numRows : 1;
 
 			$this->setStep(str_replace(env('DB_PREFIX'), '', $tableName));
-			$this->setSubstep($this->nextRange . ' / ' . $this->maxRange);
+			$this->setSubstep('');
 		}
 
 		// Finalize any pending query

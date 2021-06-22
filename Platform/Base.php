@@ -90,6 +90,7 @@ abstract class Base implements PlatformInterface
 		$sql = $db->getQuery(true)
 			->select('COUNT(*)')
 			->from($db->qn($this->tableNameProfiles))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('id') . ' = ' . $db->q($profile_id));
 
 		try
@@ -107,6 +108,7 @@ abstract class Base implements PlatformInterface
 			$sql = $db->getQuery(true)
 				->update($db->qn($this->tableNameProfiles))
 				->set($db->qn('configuration') . ' = ' . $db->q($dump_profile))
+                ->where($db->qn('company_id') . ' = ' . company_id())
 				->where($db->qn('id') . ' = ' . $db->q($profile_id));
 		}
 		else
@@ -115,14 +117,15 @@ abstract class Base implements PlatformInterface
 				->insert($db->qn($this->tableNameProfiles))
 				->columns([
 					$db->qn('id'), $db->qn('description'), $db->qn('configuration'),
-					$db->qn('filters'), $db->qn('quickicon'),
+					$db->qn('filters'), $db->qn('quickicon'), $db->qn('company_id'),
 				])
 				->values(
 					$db->q(1) . ', ' .
 					$db->q("Default backup profile") . ', ' .
 					$db->q($dump_profile) . ', ' .
 					$db->q('') . ', ' .
-					$db->q(1)
+					$db->q(1) . ', ' .
+					$db->q(company_id())
 				);
 		}
 
@@ -179,6 +182,7 @@ abstract class Base implements PlatformInterface
 			$sql = $db->getQuery(true)
 				->select($db->qn('configuration'))
 				->from($db->qn($this->tableNameProfiles))
+                ->where($db->qn('company_id') . ' = ' . company_id())
 				->where($db->qn('id') . ' = ' . $db->q($profile_id));
 
 			$databaseData = $db->setQuery($sql)->loadResult();
@@ -449,6 +453,9 @@ abstract class Base implements PlatformInterface
 				$sql_values   .= (!empty($sql_values) ? ',' : '') . $db->quote($value);
 			}
 
+			$sql_fields[] = $db->qn('company_id');
+			$sql_values .= (!empty($sql_values) ? ',' : '') . company_id();
+
 			$sql = $db->getQuery(true)
 				->insert($db->quoteName($this->tableNameStats))
 				->columns($sql_fields)
@@ -474,6 +481,7 @@ abstract class Base implements PlatformInterface
 			$sql = $db->getQuery(true)
 				->update($db->qn($this->tableNameStats))
 				->set($sql_set)
+                ->where($db->qn('company_id') . ' = ' . company_id())
 				->where($db->qn('id') . '=' . $db->q($id));
 			$db->setQuery($sql);
 			$db->query();
@@ -495,6 +503,7 @@ abstract class Base implements PlatformInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('id') . ' = ' . $db->q($id));
 		$db->setQuery($query);
 
@@ -513,6 +522,7 @@ abstract class Base implements PlatformInterface
 		$db    = Factory::getDatabase($this->get_platform_database_options());
 		$query = $db->getQuery(true)
 			->delete($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('id') . ' = ' . $db->q($id));
 		$db->setQuery($query);
 
@@ -606,6 +616,7 @@ abstract class Base implements PlatformInterface
 
 		$query->select('*')
 			->from($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->order($db->qn($config->order['by']) . " " . strtoupper($config->order['order']));
 
 		$db->setQuery($query, $config->limitstart, $config->limit);
@@ -671,6 +682,7 @@ abstract class Base implements PlatformInterface
 		}
 
 		$query->select('COUNT(*)')
+              ->where($db->qn('company_id') . ' = ' . company_id())
 			->from($db->quoteName($this->tableNameStats));
 		$db->setQuery($query);
 
@@ -692,8 +704,8 @@ abstract class Base implements PlatformInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn($this->tableNameStats))
-			->where($db->qn('status') . ' = ' . $db->q('run'))
-			->where(' NOT ' . $db->qn('archivename') . ' = ' . $db->q(''));
+            ->where($db->qn('company_id') . ' = ' . company_id())
+			->where($db->qn('status') . ' = ' . $db->q('run'));
 		if (!empty($tag))
 		{
 			$query->where($db->qn('origin') . ' LIKE ' . $db->q($tag . '%'));
@@ -726,12 +738,14 @@ abstract class Base implements PlatformInterface
 		$query2 = $db->getQuery(true)
 			->select('MAX(' . $db->qn('id') . ') AS ' . $db->qn('id'))
 			->from($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('status') . ' = ' . $db->q('complete'))
 			->group($db->qn('absolute_path'));
 
 		$query = $db->getQuery(true)
 			->select($db->qn('id'))
 			->from($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('filesexist') . ' = ' . $db->q(1))
 			->where($db->qn('id') . ' IN (' . $query2 . ')')
 			->where('NOT ' . $db->qn('absolute_path') . ' = ' . $db->q(''))
@@ -785,6 +799,7 @@ abstract class Base implements PlatformInterface
 		$query = $db->getQuery(true)
 			->select($db->qn('id'))
 			->from($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('archivename') . ' = ' . $db->q($archivename))
 			->order($db->qn('id') . ' DESC');
 
@@ -832,6 +847,7 @@ abstract class Base implements PlatformInterface
 		$sql  = $db->getQuery(true)
 			->update($db->qn($this->tableNameStats))
 			->set($db->qn('filesexist') . ' = ' . $db->q('0'))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('id') . ' IN (' . $list . ')');;
 		$db->setQuery($sql);
 
@@ -880,6 +896,7 @@ abstract class Base implements PlatformInterface
 		$sql = $db->getQuery(true)
 			->select('*')
 			->from($db->qn($this->tableNameStats))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('profile_id') . ' = ' . $db->q($profile))
 			->where($db->qn('remote_filename') . ' LIKE ' . $db->q($engine . '://%'))
 			->order($db->qn('id') . ' ASC');
@@ -904,6 +921,7 @@ abstract class Base implements PlatformInterface
 		$sql = $db->getQuery(true)
 			->select($db->qn('filters'))
 			->from($db->qn($this->tableNameProfiles))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('id') . ' = ' . $db->q($profile_id));
 		$db->setQuery($sql);
 		$all_filter_data = $db->loadResult();
@@ -948,6 +966,7 @@ abstract class Base implements PlatformInterface
 		$sql = $db->getQuery(true)
 			->update($db->qn($this->tableNameProfiles))
 			->set($db->qn('filters') . '=' . $db->q($encodedFilterData))
+            ->where($db->qn('company_id') . ' = ' . company_id())
 			->where($db->qn('id') . ' = ' . $db->q($profile_id));
 
 		try
