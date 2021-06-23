@@ -705,6 +705,7 @@ abstract class Base implements PlatformInterface
 			->select('*')
 			->from($db->qn($this->tableNameStats))
             ->where($db->qn('company_id') . ' = ' . company_id())
+            ->where(' NOT ' . $db->qn('archivename') . ' = ' . $db->q(''))
 			->where($db->qn('status') . ' = ' . $db->q('run'));
 		if (!empty($tag))
 		{
