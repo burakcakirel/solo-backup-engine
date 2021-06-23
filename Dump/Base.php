@@ -180,10 +180,10 @@ abstract class Base extends Part
 			// Fetch the installer settings
 			$this->installerSettings = (object) [
 				'installerroot' => 'installation',
-				'sqlroot'       => storage_path('restore'),
-				'databasesini'  => 1,
-				'readme'        => 1,
-				'extrainfo'     => 1,
+				'sqlroot'       => 'storage/restore/' . company_id(),
+				'databasesini'  => 0,
+				'readme'        => 0,
+				'extrainfo'     => 0,
 			];
 			$config                  = Factory::getConfiguration();
 			$installerKey            = $config->get('akeeba.advanced.embedded_installer');

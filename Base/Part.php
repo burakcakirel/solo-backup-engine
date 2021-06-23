@@ -125,14 +125,14 @@ abstract class Part
 		// Fetch the installer settings
 		$this->installerSettings = (object) [
 			'installerroot' => 'installation',
-			'sqlroot'       => storage_path('restore'),
-			'databasesini'  => 1,
-			'readme'        => 1,
-			'extrainfo'     => 1,
+			'sqlroot'       => 'storage/restore/' . company_id(),
+			'databasesini'  => 0,
+			'readme'        => 0,
+			'extrainfo'     => 0,
 			'password'      => 0,
 		];
 
-		$config               = Factory::getConfiguration();
+		/*$config               = Factory::getConfiguration();
 		$installerKey         = $config->get('akeeba.advanced.embedded_installer');
 		$installerDescriptors = Factory::getEngineParamsProvider()->getInstallerList();
 
@@ -145,7 +145,7 @@ abstract class Part
 		if (array_key_exists($installerKey, $installerDescriptors))
 		{
 			$this->installerSettings = (object) $installerDescriptors[$installerKey];
-		}
+		}*/
 	}
 
 	/**

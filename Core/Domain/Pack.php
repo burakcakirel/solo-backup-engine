@@ -559,20 +559,11 @@ ENDVCONTENT;
 
 		$archive = Factory::getArchiverEngine();
 
-        if (File::exists(base_path('.env'))) {
-            $content = File::get(base_path('.env'));
+        if (File::exists(base_path('.env.example'))) {
+            $content = File::get(base_path('.env.example'));
 
-            if (null === env('APP_INSTALLED')) {
-                $content .= PHP_EOL . 'APP_INSTALLED=false';
-            } elseif (env('APP_INSTALLED', true)) {
-                $content = str_replace('APP_INSTALLED=true', 'APP_INSTALLED=false', $content);
-            }
-
-            if (null === env('APP_RESTORING')) {
-                $content .= PHP_EOL . 'APP_RESTORING=true';
-            } elseif (false === env('APP_RESTORING', false)) {
-                $content = str_replace('APP_RESTORING=false', 'APP_RESTORING=true', $content);
-            }
+            $content .= PHP_EOL . 'APP_RESTORING=true';
+            $content = str_replace('APP_KEY=', 'APP_KEY=' . 'base64:'.base64_encode(random_bytes(32)), $content);
 
             $archive->addFileVirtual('.env', '/', $content);
         }
