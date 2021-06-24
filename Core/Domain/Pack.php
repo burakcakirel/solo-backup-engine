@@ -561,12 +561,14 @@ ENDVCONTENT;
 
         if (File::exists(base_path('.env.example'))) {
             $content = File::get(base_path('.env.example'));
-
-            $content .= PHP_EOL . 'APP_RESTORING=true';
-            $content = str_replace('APP_KEY=', 'APP_KEY=' . 'base64:'.base64_encode(random_bytes(32)), $content);
-
-            $archive->addFileVirtual('.env', '/', $content);
+        } else {
+            $content = File::get(module_path('backup-restore') . '/Resources/assets/installers/.env.example');
         }
+
+        $content .= PHP_EOL . 'APP_RESTORING=true';
+        $content = str_replace('APP_KEY=', 'APP_KEY=' . 'base64:'.base64_encode(random_bytes(32)), $content);
+
+        $archive->addFileVirtual('.env', DIRECTORY_SEPARATOR, $content);
 
 		$archive->finalize();
 
