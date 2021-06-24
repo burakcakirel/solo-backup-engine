@@ -125,7 +125,7 @@ abstract class Part
 		// Fetch the installer settings
 		$this->installerSettings = (object) [
 			'installerroot' => 'installation',
-			'sqlroot'       => 'storage/restore/' . company_id(),
+			'sqlroot'       => 'storage' . DIRECTORY_SEPARATOR . 'restore' . DIRECTORY_SEPARATOR . company_id(),
 			'databasesini'  => 0,
 			'readme'        => 0,
 			'extrainfo'     => 0,
