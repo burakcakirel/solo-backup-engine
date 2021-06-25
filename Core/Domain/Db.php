@@ -302,13 +302,13 @@ class Db extends Part
 			$this->databases_json[$section] = [
 				'dbtype'  => $type,
 				'dbtech'  => $tech,
-				'dbname'  => $definition['database'],
+				'dbname'  => '',
 				'sqlfile' => $definition['dumpFile'],
 				'marker'  => "\n/**ABDB**/",
-				'dbhost'  => $definition['host'],
-				'dbuser'  => $definition['username'],
-				'dbpass'  => $definition['password'],
-				'prefix'  => $definition['prefix'],
+				'dbhost'  => '',
+				'dbuser'  => '',
+				'dbpass'  => '',
+				'prefix'  => '',
 				'parts'   => $definition['parts'],
 				'tables'  => $definition['tables'],
 			];
