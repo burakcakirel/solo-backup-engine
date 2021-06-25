@@ -15,10 +15,17 @@ use Akeeba\Engine\Base\Exceptions\ErrorException;
 use Akeeba\Engine\Base\Exceptions\WarningException;
 use Akeeba\Engine\Factory;
 use Akeeba\Engine\Util\CRC32;
+use App\Models\Common\Media;
+use App\Traits\Uploads;
+use Illuminate\Support\Facades\File;
+use Modules\BackupRestore\Models\Backup;
+use Plank\Mediable\Facades\MediaUploader;
 use RuntimeException;
 
 class Zip extends BaseArchiver
 {
+    use Uploads;
+
 	/** @var string Beginning of central directory record. */
 	private $centralDirectoryRecordStartSignature = "\x50\x4b\x01\x02";
 
@@ -277,6 +284,18 @@ class Zip extends BaseArchiver
 		}
 
 		@chmod($this->_dataFileName, $this->getPermissions());
+
+        $media = MediaUploader::makePrivate()
+                              ->beforeSave(function(Media $media) {
+                                  $media->company_id = company_id();
+                              })
+                              ->fromSource(new \Illuminate\Http\File($this->_dataFileName))
+                              ->toDirectory($this->getMediaFolder('backups'))
+                              ->upload();
+        $backup = Backup::lastRunning()->first();
+        $backup->attachMedia($media, 'backup');
+
+        File::cleanDirectory(storage_path('backups/' . company_id()));
 	}
 
 	/**
